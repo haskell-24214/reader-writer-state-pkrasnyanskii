@@ -1,0 +1,34 @@
+{
+  "tests": [
+    {
+      "name": "tier0",
+      "setup": "export HOME=/home/runner",
+      "run": "export HOME=/home/runner;env; ghc --version; cabal --version; stack test --test-arguments \"tier0\"",
+      "input": "",
+      "output": "",
+      "comparison": "included",
+      "timeout": 10,
+      "points": 30
+    },
+    {
+      "name": "tier1",
+      "setup": "export HOME=/home/runner",
+      "run": "export HOME=/home/runner;env; ghc --version; cabal --version; stack test --test-arguments \"tier1\"",
+      "input": "",
+      "output": "",
+      "comparison": "included",
+      "timeout": 10,
+      "points": 10
+    },
+    {
+      "name": "tier2",
+      "setup": "export HOME=/home/runner",
+      "run": "export HOME=/home/runner;env; ghc --version; cabal --version; stack test --test-arguments \"tier2\"",
+      "input": "",
+      "output": "",
+      "comparison": "included",
+      "timeout": 10,
+      "points": 10
+    },
+  ]
+}
