@@ -1,4 +1,4 @@
-module Tier0.Reader (Environment (..), EnvironmentM, formatUserName, formatHost, formatCurrentDir, formatPrompt) where
+module Tier0.Reader where
 
 import Control.Monad.Reader
 
@@ -11,14 +11,24 @@ data Environment = Environment
 
 type EnvironmentM = Reader Environment
 
+-- Возвращает имя пользователя или "root" для суперпользователя
 formatUserName :: EnvironmentM String
-formatUserName = undefined
-  
+formatUserName = do
+  env <- ask
+  return $ if isSuperUser env then "root" else username env
+
+-- Возвращает имя хоста
 formatHost :: EnvironmentM String
-formatHost = undefined
+formatHost = asks host
 
+-- Возвращает текущую папку
 formatCurrentDir :: EnvironmentM String
-formatCurrentDir = undefined
+formatCurrentDir = asks currentDir
 
+-- Формирует приглашение командной строки
 formatPrompt :: EnvironmentM String
-formatPrompt = undefined
+formatPrompt = do
+  user <- formatUserName
+  hostname <- formatHost
+  cwd <- formatCurrentDir
+  return $ user ++ "@" ++ hostname ++ ":" ++ cwd ++ "$"
