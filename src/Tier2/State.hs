@@ -9,28 +9,65 @@ emptyRegisters = Registers 0 0 False 0
 type Calculation = State Registers Int
 
 plus :: Calculation
-plus = undefined
+plus = do
+  s <- get
+  let newAcc = ax s + bx s
+  put s { acc = newAcc, blink = False }
+  return newAcc
 
 minus :: Calculation
-minus = undefined
+minus = do
+  s <- get
+  let newAcc = ax s - bx s
+  put s { acc = newAcc, blink = False }
+  return newAcc
 
 productS :: Calculation
-productS = undefined
+productS = do
+  s <- get
+  let newAcc = ax s * bx s
+  put s { acc = newAcc, blink = False }
+  return newAcc
 
-div :: Calculation
-div = undefined
+divide :: Calculation
+divide = do
+  s <- get
+  if bx s == 0
+    then do
+      put emptyRegisters
+      return 0
+    else do
+      let newAcc = ax s `div` bx s
+      put s { acc = newAcc, blink = False }
+      return newAcc
 
 swap :: Calculation
-swap = undefined
+swap = do
+  s <- get
+  put s { ax = bx s, bx = ax s }
+  return 0
 
 blinkS :: Calculation
-blinkS = undefined
+blinkS = do
+  s <- get
+  put s { blink = not (blink s) }
+  return 0
 
 accS :: Calculation
-accS = undefined
+accS = do
+  s <- get
+  if blink s
+    then put s { bx = acc s, blink = not (blink s) }
+    else put s { ax = acc s, blink = not (blink s) }
+  return 0
 
 number :: Int -> Calculation
-number x = undefined
+number x = do
+  s <- get
+  if blink s
+    then put s { bx = x, blink = not (blink s) }
+    else put s { ax = x, blink = not (blink s) }
+  return x
 
 commandToCalculation :: String -> Calculation
 commandToCalculation s =
@@ -41,6 +78,7 @@ commandToCalculation s =
     "swap" -> swap
     "blink" -> blinkS
     "acc" -> accS
+    "/"    -> divide
     x -> number (read x)
 
 buildCalculation :: [String] -> Calculation
