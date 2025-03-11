@@ -1,10 +1,12 @@
-module Tier1.Reader (cd, su) where
+module Tier1.Reader where
 
 import Control.Monad.Reader
-import Tier0.Reader (Environment (..), EnvironmentM)
+import Tier0.Reader
 
+-- Функция cd добавляет новый путь к текущему каталогу
 cd :: String -> EnvironmentM a -> EnvironmentM a
-cd dir = undefined
+cd dir action = local (\env -> env { currentDir = currentDir env ++ "/" ++ dir }) action
 
+-- Функция su переключает пользователя в режим суперпользователя
 su :: EnvironmentM a -> EnvironmentM a
-su env = undefined
+su action = local (\env -> env { isSuperUser = True }) action
